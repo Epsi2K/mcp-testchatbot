@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SecureAI-Bot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<!-- ── Login Screen ─────────────────────────────────────── -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-icon">&#x1F510;</div>
+      <div class="login-logo-text">
+        <h1>SecureAI-Bot</h1>
+        <p>Internal Company Assistant</p>
+      </div>
+    </div>
+    <div class="login-error" id="login-error" role="alert"></div>
+    <form id="login-form" autocomplete="off" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="input-username">Username</label>
+        <input class="form-input" type="text" id="input-username" name="username"
+               autocomplete="username" placeholder="Enter username" maxlength="100" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="input-password">Password</label>
+        <input class="form-input" type="password" id="input-password" name="password"
+               autocomplete="current-password" placeholder="Enter password" maxlength="256" required>
+      </div>
+      <button type="submit" class="btn-login" id="btn-login">Sign in</button>
+    </form>
+    <div class="login-footer">Protected by SecureAI-Bot &middot; All sessions are audited</div>
+  </div>
+</div>
+
+<!-- ── Main App ──────────────────────────────────────────── -->
+<div id="app" class="hidden">
+  <div id="sidebar">
+    <div class="logo-area">
+      <div class="logo-icon">&#x1F916;</div>
+      <div>
+        <div class="logo-text">SecureAI-Bot</div>
+        <div class="logo-sub">Internal Assistant</div>
+      </div>
+    </div>
+    <div class="status-badge">
+      <div class="status-dot" id="status-dot"></div>
+      <span class="status-label" id="status-label">Not connected</span>
+    </div>
+    <div class="session-info">
+      <div class="session-info-row">
+        <span>User</span>
+        <span class="session-info-val" id="session-user">&#x2014;</span>
+      </div>
+      <div class="session-info-row">
+        <span>Session</span>
+        <span class="session-info-val" id="session-time">&#x2014;</span>
+      </div>
+    </div>
+    <div class="sidebar-spacer"></div>
+    <button class="btn-logout" id="btn-logout">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+        <polyline points="16 17 21 12 16 7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+      Sign out
+    </button>
+  </div>
+
+  <div id="main">
+    <div id="chat-header">
+      <div>
+        <h2>Company Assistant</h2>
+        <div class="subtitle">Ask about employees, diagnostics, and company docs</div>
+      </div>
+      <button class="btn-reset" id="btn-reset">New conversation</button>
+    </div>
+    <div id="messages"></div>
+    <div id="input-bar">
+      <div class="input-wrapper">
+        <textarea id="user-input" placeholder="Message CompanyBot..." rows="1" maxlength="1000"></textarea>
+        <div class="char-counter" id="char-counter">0 / 1000</div>
+      </div>
+      <button id="send-btn" aria-label="Send message">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"/>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="error-toast" role="alert"></div>
+
+<!-- DOMPurify from CDN (no integrity attr — covered by CSP) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>

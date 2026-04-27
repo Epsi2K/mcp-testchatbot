@@ -5,8 +5,8 @@ Runs a persistent background asyncio event loop so Flask (sync) can
 call MCP tools without spawning a new process on every request.
 
 Servers started:
-  - @modelcontextprotocol/server-filesystem  → tools prefixed mcp_fs__
-  - @modelcontextprotocol/server-sqlite      → tools prefixed mcp_db__
+  - @modelcontextprotocol/server-filesystem  -> tools prefixed mcp_fs__
+  - @modelcontextprotocol/server-sqlite      -> tools prefixed mcp_db__
 """
 
 import asyncio
@@ -164,7 +164,7 @@ def init_mcp_servers(docs_dir: str, db_path: str):
     docs_dir = os.path.abspath(docs_dir)
     db_path = os.path.abspath(db_path)
 
-    print(f"[MCP] Starting filesystem server → {docs_dir}")
+    print(f"[MCP] Starting filesystem server -> {docs_dir}")
     _fs_client = MCPServerClient(
         name="filesystem",
         prefix="mcp_fs__",
@@ -175,7 +175,7 @@ def init_mcp_servers(docs_dir: str, db_path: str):
     _fs_client.start()
     print(f"[MCP] Filesystem server ready. Tools: {[t.name for t in _fs_client.get_tools()]}")
 
-    print(f"[MCP] Starting SQLite server → {db_path}")
+    print(f"[MCP] Starting SQLite server -> {db_path}")
     _db_client = MCPServerClient(
         name="sqlite",
         prefix="mcp_db__",

@@ -227,7 +227,7 @@ def run_fetch_external_data(url: str) -> str:
             verify=True,               # SSL verification ON
             allow_redirects=False,     # No redirects — prevents open-redirect SSRF chaining
             headers={
-                "User-Agent": "CompanyBot/1.0",
+                "User-Agent": "EmployeeConnectAgent/1.0",
                 "Accept": "application/json, text/plain",
             },
             stream=False,

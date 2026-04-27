@@ -1,4 +1,4 @@
-# SecureAI-Bot
+# Employee Connect Agent
 
 A production-hardened, security-first AI chatbot. Built to survive a penetration test targeting SQLi, RCE, SSRF, prompt injection (direct + indirect), XSS, rogue tool chaining, and broken access control.
 

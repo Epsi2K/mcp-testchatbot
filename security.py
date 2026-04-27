@@ -199,16 +199,19 @@ SENSITIVE_PATTERNS = [
 ]
 
 
-def sanitize_llm_output(text: str) -> str:
-    """
-    Sanitize LLM output before sending to frontend.
-    - Redact accidentally leaked secrets
-    - HTML-escape (belt-and-suspenders; frontend uses textContent too)
-    """
+def redact_llm_output(text: str) -> str:
+    """Redact accidentally leaked secrets from LLM output. Safe to store in history."""
     for pattern in SENSITIVE_PATTERNS:
         text = re.sub(pattern, '[REDACTED]', text)
+    return text
 
-    # HTML-escape — defense-in-depth even though frontend uses textContent
+
+def sanitize_llm_output(text: str) -> str:
+    """
+    Full sanitization for frontend delivery: redact secrets + HTML-escape.
+    Do NOT store the result of this in conversation history — use redact_llm_output for that.
+    """
+    text = redact_llm_output(text)
     return html.escape(text)
 
 

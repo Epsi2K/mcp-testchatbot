@@ -276,7 +276,7 @@ def startup():
     db_path = os.environ.get("DB_PATH", "./data/company.db")
     mcp_client.init_mcp_servers(docs_dir=docs_dir, db_path=db_path)
 
-    print("[INFO] SecureAI-Bot started. debug=False")
+    print("[INFO] Employee Connect Agent started. debug=False")
     print(f"[INFO] Listening on http://127.0.0.1:{os.environ.get('PORT', 5000)}")
 
 

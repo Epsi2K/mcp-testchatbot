@@ -25,7 +25,7 @@ var MAX_LENGTH = 1000;
 // ── DOMPurify config — ultra-restrictive ─────────────────────────────────────
 var PURIFY_CONFIG = {
   ALLOWED_TAGS: ['p', 'strong', 'em', 'ul', 'li', 'ol', 'code', 'pre', 'br',
-                 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'h3', 'h4'],
+                 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'h2', 'h3', 'h4'],
   ALLOWED_ATTR: [],
   FORCE_BODY: true,
   SANITIZE_DOM: true,
@@ -41,17 +41,68 @@ function escapeHtml(str) {
   return d.innerHTML;
 }
 
-// ── Basic markdown → sanitized HTML ──────────────────────────────────────────
-function renderMarkdown(text) {
-  var html = text
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.*?)\*/g, '<em>$1</em>')
-    .replace(/`([^`\n]+)`/g, '<code>$1</code>')
-    .replace(/\n\n+/g, '</p><p>')
-    .replace(/\n/g, '<br>');
+// ── Markdown table → HTML ─────────────────────────────────────────────────────
+function renderTable(lines) {
+  var html = '<table>';
+  var inBody = false;
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i].trim();
+    if (!line) continue;
+    // Separator row (e.g. |---|---|) marks the header/body boundary
+    if (/^\|[\s\-|:]+\|$/.test(line)) {
+      if (!inBody) { html += '</thead><tbody>'; inBody = true; }
+      continue;
+    }
+    var cells = line.replace(/^\||\|$/g, '').split('|');
+    var tag = inBody ? 'td' : 'th';
+    if (!inBody && i === 0) html += '<thead>';
+    html += '<tr>' + cells.map(function(c) {
+      return '<' + tag + '>' + c.trim() + '</' + tag + '>';
+    }).join('') + '</tr>';
+  }
+  if (!inBody) html += '</thead><tbody>';
+  html += '</tbody></table>';
+  return html;
+}
 
-  html = '<p>' + html + '</p>';
-  return DOMPurify.sanitize(html, PURIFY_CONFIG);
+// ── Basic markdown → sanitized HTML ──────────────────────────────────────────
+function renderMarkdown(rawText) {
+  // Split text into table blocks and text blocks, render each separately
+  var lines = rawText.split('\n');
+  var blocks = [];
+  var i = 0;
+  while (i < lines.length) {
+    // Table: current line has | AND next line is a separator row
+    if (i + 1 < lines.length && /\|/.test(lines[i]) && /^\|[\s\-|:]+\|$/.test(lines[i + 1].trim())) {
+      var tableLines = [];
+      while (i < lines.length && /\|/.test(lines[i])) { tableLines.push(lines[i]); i++; }
+      blocks.push({ type: 'table', lines: tableLines });
+    } else {
+      var textLines = [];
+      while (i < lines.length) {
+        if (i + 1 < lines.length && /\|/.test(lines[i]) && /^\|[\s\-|:]+\|$/.test(lines[i + 1].trim())) break;
+        textLines.push(lines[i]); i++;
+      }
+      if (textLines.length) blocks.push({ type: 'text', lines: textLines });
+    }
+  }
+
+  var parts = blocks.map(function(block) {
+    if (block.type === 'table') return renderTable(block.lines);
+    var t = block.lines.join('\n');
+    t = t
+      .replace(/^#{1,2}\s+(.+)$/gm, '<h2>$1</h2>')
+      .replace(/^###\s+(.+)$/gm, '<h3>$1</h3>')
+      .replace(/^####\s+(.+)$/gm, '<h4>$1</h4>')
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/`([^`\n]+)`/g, '<code>$1</code>')
+      .replace(/\n\n+/g, '</p><p>')
+      .replace(/\n/g, '<br>');
+    return '<p>' + t + '</p>';
+  });
+
+  return DOMPurify.sanitize(parts.join(''), PURIFY_CONFIG);
 }
 
 // ── Notifications ─────────────────────────────────────────────────────────────

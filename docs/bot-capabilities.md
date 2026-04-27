@@ -1,8 +1,8 @@
-# CompanyBot — Full Capabilities Reference
+# Employee Connect Agent — Full Capabilities Reference
 
 ## Overview
 
-CompanyBot is a secure internal AI assistant powered by **Groq (llama-3.3-70b-versatile)**.
+Employee Connect Agent is a secure internal AI assistant powered by **Groq (llama-3.3-70b-versatile)**.
 It operates with a hardened agentic loop that enforces strict security controls on every
 request, tool call, and response. All actions are logged to `logs/security.log`.
 
